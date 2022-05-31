@@ -75,7 +75,7 @@ const ViewerForge = () => {
       if (!event.keyCode) return;
       if (event.keyCode < 49 || event.keyCode > 55) return;
 
-      if (event.keyCode == 49) {
+      if (event.keyCode === 49) {
         offsetMode = !offsetMode;
         pixelCompareExt.setChangeOffsetMode(offsetMode);
       } else pixelCompareExt.setDiffMode(event.keyCode - 50);

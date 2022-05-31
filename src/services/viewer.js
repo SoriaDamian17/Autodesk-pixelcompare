@@ -7,8 +7,8 @@ const headers = {
 
 const body = qs.stringify({
   grant_type: "client_credentials",
-  client_id: "pQVB4jRQDQOE4WAUSKM2XZVOeno6AqZg",
-  client_secret: "V4HAaxjTFBxiGxGF",
+  client_id: "XXX",
+  client_secret: "XXX",
   scope: "data:read data:write"
 });
 
