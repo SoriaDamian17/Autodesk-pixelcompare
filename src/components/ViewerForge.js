@@ -2,12 +2,28 @@ import Grid from "@mui/material/Grid";
 import { useEffect, useRef } from "react";
 import viewerService from "../services/viewer";
 
+// Init AUTODESK Global Obj
 var Autodesk = window.Autodesk;
 
+// Create new Component
 const ViewerForge = () => {
   let viewer = null;
+  // defined container where render viewer
   const ViewerContainer = useRef(null);
+  // Defined options to init viewer
+  const options = {
+    env: "AutodeskProduction2",
+    language: "en",
+    api: "streamingV2",
+    config3d: {
+      extensions: ["Autodesk.Viewing.PixelCompare"]
+    },
+    getAccessToken: (onSuccess) => getAccessToken(onSuccess),
+    urn1: "urn:URN_TO_DOCUMENT",
+    urn2: "urn:URN_TO_DOCUMENT"
+  };
 
+  // method to return token
   function getAccessToken(onSuccess) {
     viewerService.post("authentication/v1/authenticate").then((response) => {
       const { data } = response;
@@ -20,17 +36,7 @@ const ViewerForge = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   async function initializerViewer() {
     console.log("inicialize");
-    const options = {
-      env: "AutodeskProduction2",
-      language: "en",
-      api: "streamingV2",
-      config3d: {
-        extensions: ["Autodesk.Viewing.PixelCompare"]
-      },
-      getAccessToken: (onSuccess) => getAccessToken(onSuccess),
-      urn1:
-        "urn:dXJuOmFkc2sud2lwcHJvZDpmcy5maWxlOnZmLm1YREtkbHdCU0xHWnN0eUlxRk42TWc_dmVyc2lvbj0x"
-    };
+
     await Autodesk.Viewing.Initializer(options, async () => {
       viewer = new Autodesk.Viewing.GuiViewer3D(ViewerContainer.current, {});
       Autodesk.Viewing.Document.load(
@@ -83,9 +89,7 @@ const ViewerForge = () => {
     window.addEventListener("keydown", onKeyDown);
 
     pixelCompareExt
-      .compareModelWithCurrent(
-        "urn:dXJuOmFkc2sud2lwcHJvZDpmcy5maWxlOnZmLm1YREtkbHdCU0xHWnN0eUlxRk42TWc_dmVyc2lvbj0x"
-      )
+      .compareModelWithCurrent(options.urn2)
       .then(function (result) {
         console.log(
           `compare models ${result ? "successful, yeah" : "failed, boo"}`
@@ -94,33 +98,12 @@ const ViewerForge = () => {
   }
 
   useEffect(() => {
-    /*const link = document.createElement("link");
-    link.id = "forgeViewerCss";
-    link.rel = "stylesheet";
-    link.type = "text/css";
-    link.href = `https://developer.api.autodesk.com/modelderivative/v2/viewers/7./style.min.css`;
-    document.getElementsByTagName("head")[0].appendChild(link);
-
-    const config = document.createElement("script");
-    config.id = "forgeViewerJs";
-    config.src = `https://developer.api.autodesk.com/modelderivative/v2/viewers/7./viewer3D.min.js`;
-    document.getElementsByTagName("head")[0].appendChild(config);*/
-
-    // config.onload = () => {
     if (Autodesk) {
       initializerViewer();
     }
-    // };
-
-    /*document.getElementsByTagName("body")[0].classList.add("page-viewer");
-
-    return () => {
-      document.getElementById("forgeViewerCss")?.remove();
-      document.getElementById("forgeViewerJs")?.remove();
-      document.getElementsByTagName("body")[0].classList.remove("page-viewer");
-    };*/
   }, [initializerViewer]);
 
+  // Defined template to render viewer
   return (
     <Grid
       container

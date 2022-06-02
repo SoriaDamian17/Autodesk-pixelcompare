@@ -5,6 +5,9 @@ export const axiosBase = axios.create({
   responseType: "json"
 });
 
+/**
+ * Configuration Base url AUTODESK.
+ */
 export const viewerBase = axios.create({
   baseURL: `https://developer.api.autodesk.com/`,
   responseType: "json"
